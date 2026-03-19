@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Message = {
   role: "user" | "assistant";
@@ -32,6 +32,8 @@ export default function SimpleChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
   const suggestions = useMemo(
     () => [
       "Hoeveel vakantiedagen heb ik?",
@@ -39,6 +41,16 @@ export default function SimpleChat() {
     ],
     []
   );
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages, loading]);
+
+  const resetConversation = () => {
+    setMessages([]);
+    setInput("");
+    setLoading(false);
+  };
 
   const sendMessage = async (text?: string) => {
     const messageToSend = (text ?? input).trim();
@@ -63,6 +75,7 @@ export default function SimpleChat() {
       });
 
       const data = await res.json();
+
       if (!data?.answer) {
         throw new Error("Leeg antwoord");
       }
@@ -79,7 +92,8 @@ export default function SimpleChat() {
         ...prev,
         {
           role: "assistant",
-          text: "Er ging iets mis. Probeer het later opnieuw.",
+          text:
+            "Het lukt nu even niet om je vraag te beantwoorden. Probeer het zo nog eens. Blijft het probleem? Neem dan contact op met het Service Center via 0345 851 963.",
         },
       ]);
     } finally {
@@ -185,14 +199,39 @@ export default function SimpleChat() {
           padding: "18px 22px",
           fontWeight: 700,
           fontSize: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 16,
         }}
       >
-        💬 Chat over de cao NN-Group
+        <span>💬 Chat over de cao NN-Group</span>
+
+        {messages.length > 0 && (
+          <button
+            type="button"
+            onClick={resetConversation}
+            style={{
+              background: "rgba(255,255,255,0.16)",
+              color: "#ffffff",
+              border: "1px solid rgba(255,255,255,0.25)",
+              borderRadius: 10,
+              padding: "8px 12px",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Nieuw gesprek
+          </button>
+        )}
       </div>
 
       <div
         style={{
           minHeight: 520,
+          maxHeight: 620,
+          overflowY: "auto",
           padding: "28px 28px 20px",
           background: "#ffffff",
           display: "flex",
@@ -246,8 +285,6 @@ export default function SimpleChat() {
                     minWidth: 320,
                   }}
                 >
-
-
                   <div
                     style={{
                       display: "flex",
@@ -311,6 +348,8 @@ export default function SimpleChat() {
                 </div>
               </div>
             )}
+
+            <div ref={messagesEndRef} />
           </div>
         )}
 

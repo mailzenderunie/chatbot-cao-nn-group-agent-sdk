@@ -236,7 +236,7 @@ export default function SimpleChat() {
     background: "#ffffff",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "flex-start",
+    justifyContent: messages.length === 0 ? "flex-end" : "flex-start",
   }}
 >
         {messages.length > 0 && (

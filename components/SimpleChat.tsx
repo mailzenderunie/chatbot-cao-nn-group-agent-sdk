@@ -227,18 +227,18 @@ export default function SimpleChat() {
         )}
       </div>
 
-      <div
-        style={{
-          minHeight: 520,
-          maxHeight: 620,
-          overflowY: "auto",
-          padding: "28px 28px 20px",
-          background: "#ffffff",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: messages.length === 0 ? "flex-end" : "flex-start",
-        }}
-      >
+<div
+  style={{
+    minHeight: 520,
+    maxHeight: 620,
+    overflowY: "auto",
+    padding: "28px 28px 20px",
+    background: "#ffffff",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+  }}
+>
         {messages.length > 0 && (
           <div style={{ marginBottom: 24 }}>
             {messages.map((msg, i) => (
